@@ -1,0 +1,268 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ConductieHeatTDMA</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-01"><meta name="DC.source" content="ConductieHeatTDMA.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">clear
+clc;
+x(1:4)=20;
+time=0;
+timef=9;
+a(2:4)=1;
+b(1)=-1.5;
+b(2:4)=-3;
+c(1:3)=1;
+    display(<span class="string">'THE SOLUTION BY TDMA AT TIME seconds'</span>);
+   fprintf(<span class="string">'%3s %5s %10s %10s %10s\n'</span>,<span class="string">'Time'</span>,<span class="string">'T1'</span>,<span class="string">'T2'</span>,<span class="string">'T3'</span>,<span class="string">'T4'</span>)
+   count=1;
+    hh=ones(30,4);
+<span class="keyword">for</span> time=0.1:0.1:timef
+    xold=x;
+    d(1)=-0.5*xold(1);
+    d(2)=-xold(2);
+    d(3)=-xold(3);
+    d(4)=-xold(4)-300;
+    i=1;
+    n=4;
+    beta(i)=b(i);
+    gamma(i)=d(i)/beta(i);
+    il=i+1;
+    <span class="keyword">for</span> j=il:n
+        beta(j)=b(j)-a(j)*c(j-1)/beta(j-1);
+        gamma(j)=(d(j)-a(j)*gamma(j-1))/beta(j);
+    <span class="keyword">end</span>
+    x(n)=gamma(n);
+    n1=n-i;
+    <span class="keyword">for</span> k=1:n1
+        j=n-k;
+        x(j)=gamma(j)-c(j)*x(j+1)/beta(j);
+    <span class="keyword">end</span>
+<span class="comment">%     display(['THE SOLUTION BY TDMA AT TIME ',num2str(time),'seconds'])</span>
+  fprintf(<span class="string">'%3g'</span>, time); fprintf(<span class="string">'  %8.4f'</span>, x(1)); fprintf(<span class="string">'   %8.4f'</span>, x(2));
+  fprintf(<span class="string">'   %8.4f'</span>, x(3)); fprintf(<span class="string">'   %8.4f'</span>, x(4));
+    fprintf(<span class="string">'\n'</span>);
+<span class="comment">%     tt(count)=time;</span>
+<span class="comment">%     temp(count).tt=[x(1),x(2),x(3),x(4)];</span>
+    hh(count,1:4)=[x(1),x(2),x(3),x(4)];
+    count=count+1;
+<span class="keyword">end</span>
+
+[tkt,llent]=meshgrid(1:1:n,0.1:0.1:timef);
+    mesh(tkt,llent,hh)
+<span class="comment">%     xlim([0 1]);</span>
+    title(<span class="string">'Temprature Distriution on a Metal bar'</span>)
+    xlabel(<span class="string">'Position[meter x 0.25]'</span>,<span class="string">'Rotation'</span>,15)
+    ylabel(<span class="string">'time[sec]'</span>,<span class="string">'Rotation'</span>,-35)
+    zlabel(<span class="string">'Temprature[K]'</span>)
+<span class="comment">%     surf(hh)</span>
+</pre><pre class="codeoutput">THE SOLUTION BY TDMA AT TIME seconds
+Time    T1         T2         T3         T4
+0.1   31.9149    37.8723    61.7021   127.2340
+0.2   53.2096    63.8569   100.4889   175.9077
+0.3   78.5928    91.2844   131.4034   202.4370
+0.4  104.3467   117.2236   156.0398   219.4923
+0.5  128.5549   140.6590   176.1986   231.8970
+0.6  150.4507   161.3986   193.0861   241.6610
+0.7  169.8656   179.5730   207.4548   249.7053
+0.8  186.9039   195.4231   219.7923   256.4992
+0.9  201.7767   209.2131   230.4394   262.3129
+  1  214.7230   221.1962   239.6525   267.3218
+1.1  225.9762   231.6028   247.6359   271.6526
+1.2  235.7503   240.6374   254.5591   275.4039
+1.3  244.2365   248.4796   260.5650   278.6563
+1.4  251.6031   255.2863   265.7763   281.4775
+1.5  257.9970   261.1939   270.2985   283.9253
+1.6  263.5464   266.3211   274.2230   286.0495
+1.7  268.3628   270.7709   277.6289   287.8928
+1.8  272.5428   274.6328   280.5848   289.4925
+1.9  276.1706   277.9845   283.1500   290.8809
+  2  279.3191   280.8933   285.3764   292.0857
+2.1  282.0516   283.4178   287.3085   293.1314
+2.2  284.4230   285.6087   288.9854   294.0389
+2.3  286.4811   287.5102   290.4407   294.8266
+2.4  288.2673   289.1604   291.7037   295.5101
+2.5  289.8175   290.5926   292.7999   296.1033
+2.6  291.1629   291.8356   293.7512   296.6182
+2.7  292.3305   292.9143   294.5768   297.0650
+2.8  293.3438   293.8505   295.2934   297.4528
+2.9  294.2233   294.6630   295.9152   297.7893
+  3  294.9865   295.3682   296.4550   298.0814
+3.1  295.6490   295.9802   296.9233   298.3349
+3.2  296.2238   296.5113   297.3299   298.5549
+3.3  296.7228   296.9722   297.6826   298.7459
+3.4  297.1558   297.3723   297.9888   298.9116
+3.5  297.5316   297.7195   298.2546   299.0554
+3.6  297.8577   298.0208   298.4852   299.1802
+3.7  298.1408   298.2823   298.6853   299.2885
+3.8  298.3864   298.5092   298.8590   299.3825
+3.9  298.5996   298.7062   299.0098   299.4641
+  4  298.7846   298.8772   299.1406   299.5349
+4.1  298.9452   299.0255   299.2542   299.5964
+4.2  299.0846   299.1543   299.3527   299.6497
+4.3  299.2055   299.2660   299.4382   299.6960
+4.4  299.3105   299.3630   299.5125   299.7361
+4.5  299.4016   299.4472   299.5769   299.7710
+4.6  299.4807   299.5202   299.6328   299.8013
+4.7  299.5493   299.5836   299.6813   299.8275
+4.8  299.6088   299.6386   299.7234   299.8503
+4.9  299.6605   299.6864   299.7600   299.8701
+  5  299.7054   299.7278   299.7917   299.8873
+5.1  299.7443   299.7638   299.8192   299.9021
+5.2  299.7781   299.7950   299.8431   299.9151
+5.3  299.8074   299.8221   299.8638   299.9263
+5.4  299.8329   299.8456   299.8818   299.9360
+5.5  299.8549   299.8660   299.8974   299.9445
+5.6  299.8741   299.8837   299.9110   299.9518
+5.7  299.8907   299.8991   299.9227   299.9582
+5.8  299.9052   299.9124   299.9329   299.9637
+5.9  299.9177   299.9240   299.9418   299.9685
+  6  299.9286   299.9340   299.9495   299.9727
+6.1  299.9380   299.9427   299.9562   299.9763
+6.2  299.9462   299.9503   299.9620   299.9794
+6.3  299.9533   299.9569   299.9670   299.9821
+6.4  299.9595   299.9626   299.9713   299.9845
+6.5  299.9648   299.9675   299.9751   299.9865
+6.6  299.9695   299.9718   299.9784   299.9883
+6.7  299.9735   299.9755   299.9813   299.9899
+6.8  299.9770   299.9788   299.9837   299.9912
+6.9  299.9800   299.9816   299.9859   299.9924
+  7  299.9827   299.9840   299.9878   299.9934
+7.1  299.9850   299.9861   299.9894   299.9942
+7.2  299.9870   299.9880   299.9908   299.9950
+7.3  299.9887   299.9895   299.9920   299.9957
+7.4  299.9902   299.9909   299.9931   299.9962
+7.5  299.9915   299.9921   299.9940   299.9967
+7.6  299.9926   299.9932   299.9948   299.9972
+7.7  299.9936   299.9941   299.9955   299.9975
+7.8  299.9944   299.9949   299.9961   299.9979
+7.9  299.9952   299.9955   299.9966   299.9981
+  8  299.9958   299.9961   299.9970   299.9984
+8.1  299.9964   299.9966   299.9974   299.9986
+8.2  299.9968   299.9971   299.9978   299.9988
+8.3  299.9973   299.9975   299.9981   299.9990
+8.4  299.9976   299.9978   299.9983   299.9991
+8.5  299.9979   299.9981   299.9985   299.9992
+8.6  299.9982   299.9983   299.9987   299.9993
+8.7  299.9984   299.9986   299.9989   299.9994
+8.8  299.9986   299.9988   299.9990   299.9995
+8.9  299.9988   299.9989   299.9992   299.9996
+  9  299.9990   299.9991   299.9993   299.9996
+</pre><img vspace="5" hspace="5" src="ConductieHeatTDMA_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear 
+clc;
+x(1:4)=20;
+time=0;
+timef=9;
+a(2:4)=1;
+b(1)=-1.5;
+b(2:4)=-3;
+c(1:3)=1;
+    display('THE SOLUTION BY TDMA AT TIME seconds');
+   fprintf('%3s %5s %10s %10s %10s\n','Time','T1','T2','T3','T4')
+   count=1;
+    hh=ones(30,4);
+for time=0.1:0.1:timef
+    xold=x;
+    d(1)=-0.5*xold(1);
+    d(2)=-xold(2);
+    d(3)=-xold(3);
+    d(4)=-xold(4)-300;
+    i=1;
+    n=4;
+    beta(i)=b(i);
+    gamma(i)=d(i)/beta(i);
+    il=i+1;
+    for j=il:n
+        beta(j)=b(j)-a(j)*c(j-1)/beta(j-1);
+        gamma(j)=(d(j)-a(j)*gamma(j-1))/beta(j);
+    end
+    x(n)=gamma(n);
+    n1=n-i;
+    for k=1:n1
+        j=n-k;
+        x(j)=gamma(j)-c(j)*x(j+1)/beta(j);
+    end
+%     display(['THE SOLUTION BY TDMA AT TIME ',num2str(time),'seconds'])
+  fprintf('%3g', time); fprintf('  %8.4f', x(1)); fprintf('   %8.4f', x(2));
+  fprintf('   %8.4f', x(3)); fprintf('   %8.4f', x(4));
+    fprintf('\n');
+%     tt(count)=time;
+%     temp(count).tt=[x(1),x(2),x(3),x(4)];
+    hh(count,1:4)=[x(1),x(2),x(3),x(4)];
+    count=count+1;
+end
+
+[tkt,llent]=meshgrid(1:1:n,0.1:0.1:timef);
+    mesh(tkt,llent,hh)
+%     xlim([0 1]);
+    title('Temprature Distriution on a Metal bar')
+    xlabel('Position[meter x 0.25]','Rotation',15)
+    ylabel('time[sec]','Rotation',-35)
+    zlabel('Temprature[K]')
+%     surf(hh)
+##### SOURCE END #####
+--></body></html>
