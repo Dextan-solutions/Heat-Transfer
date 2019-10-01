@@ -1,0 +1,208 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ConductieHeatTDMA</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-10-01"><meta name="DC.source" content="ConductieHeatTDMA.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">clear
+clc;
+x(1:4)=20;
+time=0;
+timef=3;
+a(2:4)=1;
+b(1)=-1.5;
+b(2:4)=-3;
+c(1:3)=1;
+    display(<span class="string">'THE SOLUTION BY TDMA AT TIME seconds'</span>);
+   fprintf(<span class="string">'%3s %5s %10s %10s %10s\n'</span>,<span class="string">'Time'</span>,<span class="string">'T1'</span>,<span class="string">'T2'</span>,<span class="string">'T3'</span>,<span class="string">'T4'</span>)
+   count=1;
+    hh=ones(30,4);
+<span class="keyword">for</span> time=0.1:0.1:timef
+    xold=x;
+    d(1)=-0.5*xold(1);
+    d(2)=-xold(2);
+    d(3)=-xold(3);
+    d(4)=-xold(4)-300;
+    i=1;
+    n=4;
+    beta(i)=b(i);
+    gamma(i)=d(i)/beta(i);
+    il=i+1;
+    <span class="keyword">for</span> j=il:n
+        beta(j)=b(j)-a(j)*c(j-1)/beta(j-1);
+        gamma(j)=(d(j)-a(j)*gamma(j-1))/beta(j);
+    <span class="keyword">end</span>
+    x(n)=gamma(n);
+    n1=n-i;
+    <span class="keyword">for</span> k=1:n1
+        j=n-k;
+        x(j)=gamma(j)-c(j)*x(j+1)/beta(j);
+    <span class="keyword">end</span>
+<span class="comment">%     display(['THE SOLUTION BY TDMA AT TIME ',num2str(time),'seconds'])</span>
+  fprintf(<span class="string">'%3g'</span>, time); fprintf(<span class="string">'  %8.4f'</span>, x(1)); fprintf(<span class="string">'   %8.4f'</span>, x(2));
+  fprintf(<span class="string">'   %8.4f'</span>, x(3)); fprintf(<span class="string">'   %8.4f'</span>, x(4));
+    fprintf(<span class="string">'\n'</span>);
+<span class="comment">%     tt(count)=time;</span>
+<span class="comment">%     temp(count).tt=[x(1),x(2),x(3),x(4)];</span>
+    hh(count,1:4)=[x(1),x(2),x(3),x(4)];
+    count=count+1;
+<span class="keyword">end</span>
+
+[tkt,llent]=meshgrid(1:1:n,0.1:0.1:timef);
+    mesh(tkt,llent,hh)
+<span class="comment">%     xlim([0 1]);</span>
+    title(<span class="string">'Temprature Distriution on a Metal bar'</span>)
+    xlabel(<span class="string">'Position[meter x 0.25]'</span>,<span class="string">'Rotation'</span>,15)
+    ylabel(<span class="string">'time[sec]'</span>,<span class="string">'Rotation'</span>,-35)
+    zlabel(<span class="string">'Temprature[K]'</span>)
+<span class="comment">%     surf(hh)</span>
+</pre><pre class="codeoutput">THE SOLUTION BY TDMA AT TIME seconds
+Time    T1         T2         T3         T4
+0.1   31.9149    37.8723    61.7021   127.2340
+0.2   53.2096    63.8569   100.4889   175.9077
+0.3   78.5928    91.2844   131.4034   202.4370
+0.4  104.3467   117.2236   156.0398   219.4923
+0.5  128.5549   140.6590   176.1986   231.8970
+0.6  150.4507   161.3986   193.0861   241.6610
+0.7  169.8656   179.5730   207.4548   249.7053
+0.8  186.9039   195.4231   219.7923   256.4992
+0.9  201.7767   209.2131   230.4394   262.3129
+  1  214.7230   221.1962   239.6525   267.3218
+1.1  225.9762   231.6028   247.6359   271.6526
+1.2  235.7503   240.6374   254.5591   275.4039
+1.3  244.2365   248.4796   260.5650   278.6563
+1.4  251.6031   255.2863   265.7763   281.4775
+1.5  257.9970   261.1939   270.2985   283.9253
+1.6  263.5464   266.3211   274.2230   286.0495
+1.7  268.3628   270.7709   277.6289   287.8928
+1.8  272.5428   274.6328   280.5848   289.4925
+1.9  276.1706   277.9845   283.1500   290.8809
+  2  279.3191   280.8933   285.3764   292.0857
+2.1  282.0516   283.4178   287.3085   293.1314
+2.2  284.4230   285.6087   288.9854   294.0389
+2.3  286.4811   287.5102   290.4407   294.8266
+2.4  288.2673   289.1604   291.7037   295.5101
+2.5  289.8175   290.5926   292.7999   296.1033
+2.6  291.1629   291.8356   293.7512   296.6182
+2.7  292.3305   292.9143   294.5768   297.0650
+2.8  293.3438   293.8505   295.2934   297.4528
+2.9  294.2233   294.6630   295.9152   297.7893
+  3  294.9865   295.3682   296.4550   298.0814
+</pre><img vspace="5" hspace="5" src="ConductieHeatTDMA_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear 
+clc;
+x(1:4)=20;
+time=0;
+timef=3;
+a(2:4)=1;
+b(1)=-1.5;
+b(2:4)=-3;
+c(1:3)=1;
+    display('THE SOLUTION BY TDMA AT TIME seconds');
+   fprintf('%3s %5s %10s %10s %10s\n','Time','T1','T2','T3','T4')
+   count=1;
+    hh=ones(30,4);
+for time=0.1:0.1:timef
+    xold=x;
+    d(1)=-0.5*xold(1);
+    d(2)=-xold(2);
+    d(3)=-xold(3);
+    d(4)=-xold(4)-300;
+    i=1;
+    n=4;
+    beta(i)=b(i);
+    gamma(i)=d(i)/beta(i);
+    il=i+1;
+    for j=il:n
+        beta(j)=b(j)-a(j)*c(j-1)/beta(j-1);
+        gamma(j)=(d(j)-a(j)*gamma(j-1))/beta(j);
+    end
+    x(n)=gamma(n);
+    n1=n-i;
+    for k=1:n1
+        j=n-k;
+        x(j)=gamma(j)-c(j)*x(j+1)/beta(j);
+    end
+%     display(['THE SOLUTION BY TDMA AT TIME ',num2str(time),'seconds'])
+  fprintf('%3g', time); fprintf('  %8.4f', x(1)); fprintf('   %8.4f', x(2));
+  fprintf('   %8.4f', x(3)); fprintf('   %8.4f', x(4));
+    fprintf('\n');
+%     tt(count)=time;
+%     temp(count).tt=[x(1),x(2),x(3),x(4)];
+    hh(count,1:4)=[x(1),x(2),x(3),x(4)];
+    count=count+1;
+end
+
+[tkt,llent]=meshgrid(1:1:n,0.1:0.1:timef);
+    mesh(tkt,llent,hh)
+%     xlim([0 1]);
+    title('Temprature Distriution on a Metal bar')
+    xlabel('Position[meter x 0.25]','Rotation',15)
+    ylabel('time[sec]','Rotation',-35)
+    zlabel('Temprature[K]')
+%     surf(hh)
+##### SOURCE END #####
+--></body></html>
