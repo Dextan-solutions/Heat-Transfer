@@ -6,3 +6,4 @@ The temperature of a metal bar (1meter long) is raised to 200o𝐶 and the bar i
 chamber to prevent heat loss from the surfaces of the bar except the ends which are in contact with coolant at 
 0o𝐶.
 
+To see the result of the code please open the pdf file called "CodeResult"
